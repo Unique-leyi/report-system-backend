@@ -48,10 +48,16 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: 'Authentication failed' });
     }
 
+    const { password: passwordHash, ...otherDetails } = user.toJSON();
+
     // Generate a JWT token for authentication
     const token = jwt.sign({ userId: user._id }, process.env.SECRET, { expiresIn: '1h' });
 
-    res.status(200).json({ token });
+    res.status(200).json({ 
+      token,
+      user: otherDetails,
+      message: "Login successful" 
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
