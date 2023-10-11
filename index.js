@@ -5,6 +5,7 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db.js");
 const config = require("./config/index.js");
+const uploadImage = require("./middleware/uploadimage");
 
 connectDB();
 
@@ -16,6 +17,13 @@ app.use(express.json());
 app.use(cors({
     origin: allowedDomains,
 }))
+
+app.post("/api/uploadImage", (req, res) => {
+  uploadImage(req.body.images)
+    .then((url) => res.status(200).json({ message: url }))
+    .catch((err) => res.status(500).json({ error: err }))
+});
+
 
 require("./routes/auth.routes.js")(app);
 require("./routes/report.routes.js")(app);

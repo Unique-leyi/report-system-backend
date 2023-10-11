@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
     res.json({ message: 'User registered successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Something went wrong' });
   }
 };
 
@@ -39,22 +39,42 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-      return res.status(401).json({ error: 'Authentication failed' });
+      return res.status(401).json({ error: 'Login failed' });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Authentication failed' });
+      return res.status(401).json({ error: 'Login failed' });
     }
+
+    const { password: passwordHash, ...otherDetails } = user.toJSON();
+
 
     // Generate a JWT token for authentication
     const token = jwt.sign({ userId: user._id }, process.env.SECRET, { expiresIn: '1h' });
 
-    res.status(200).json({ token });
+    res.status(200).json({ 
+       token,
+       user: otherDetails,
+       message: "Login successful!" 
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+
+
+exports.logout = (req, res) => {
+  try {
+    res.clearCookie('token');
+
+    // Return a success message
+    return res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong' });
   }
 };
 

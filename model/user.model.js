@@ -14,7 +14,7 @@ const UserSchema = new Schema({
 
     reportId: {
         type: Schema.Types.ObjectId,
-        ref: "UserReport",
+        ref: "Report",
     }
 
 });
