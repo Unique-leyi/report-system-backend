@@ -1,8 +1,13 @@
+// report.js
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const ReportSchema = new Schema({
-  task_title: {
+  task_headline: {
+    type: String,
+    required: true,
+  },
+  task_summary: {
     type: String,
     required: true,
   },
@@ -18,12 +23,11 @@ const ReportSchema = new Schema({
     type: Date,
     required: true,
   },
-  task_author: {
-    type: String,
-    required: true,
-  },
+  // Add a reference to the User model
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  }
 });
 
-const Report = mongoose.model('Report', ReportSchema);
-
-module.exports = Report;
+module.exports = mongoose.model('Report', ReportSchema);

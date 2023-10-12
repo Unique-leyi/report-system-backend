@@ -50,15 +50,22 @@ exports.login = async (req, res) => {
 
     const { password: passwordHash, ...otherDetails } = user.toJSON();
 
+    const token = jwt.sign({ userId: user._id }, process.env.SECRET, { expiresIn: '1h' }); 
 
-    // Generate a JWT token for authentication
-    const token = jwt.sign({ userId: user._id }, process.env.SECRET, { expiresIn: '1h' });
-
-    res.status(200).json({ 
-       token,
-       user: otherDetails,
-       message: "Login successful!" 
+   
+    res.cookie('token', token, {
+      maxAge: 3600000, 
+      httpOnly: false,
+      secure: false, 
     });
+
+    return res.status(200).json(
+    { 
+        token: token, 
+        user: otherDetails, 
+        message: 'Login successful' 
+    });
+  
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Something went wrong' });
@@ -68,13 +75,17 @@ exports.login = async (req, res) => {
 
 exports.logout = (req, res) => {
   try {
-    res.clearCookie('token');
+    // Clear the token cookie
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: true,
+    });
 
     // Return a success message
     return res.status(200).json({ message: 'Logout successful' });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Something went wrong' });
+    return res.status(500).json({ error: 'Failed to logout' });
   }
 };
+
 

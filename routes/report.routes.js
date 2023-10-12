@@ -1,17 +1,15 @@
+module.exports = (app) => {
+  const report = require("../controller/report.controller");
+  const verifyToken = require("../middleware/verifyToken");
 
-module.exports = app => {
-    const report = require("../controller/report.controller.js");
-    const verifyToken = require("../middleware/verifyToken");
-  
-    var router = require("express").Router();
-    
-    router.post("/create", verifyToken,  report.createReport);
-    router.put("/:id", verifyToken,  report.updateReport);
-    router.delete("/:id", verifyToken, report.deleteReport)
-    router.get("/", verifyToken, report.getReports);
-    router.get("/:id", verifyToken, report.getReports);
+  const router = require("express").Router();
 
-    
-    app.use('/api/report', router);
-  };
-  
+  router.post("/:userId/create", verifyToken, report.createReport);
+  router.put("/:userId/:reportId", verifyToken, report.updateReport);
+  router.delete("/:userId/:reportId", verifyToken, report.deleteReport);
+  router.get("/:userId", verifyToken, report.getReportsById);
+  router.get("/", report.getReports);
+  router.get("/:userId/:reportId", verifyToken, report.getReport);
+
+  app.use("/api/report", router);
+};

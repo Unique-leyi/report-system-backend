@@ -16,17 +16,36 @@ const options = {
     resource_type: "auto",
 };
 
+const uploadImage = (image) => {
+    return new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(image, options, (error, result) => {
+            if(result && result.secure_url) {
+                return resolve(result.secure_url);
+            }
+            return reject({ message: error.message });
+        })
+
+    })
+}
+
 module.exports = (image) => {
     return new Promise((resolve, reject) => {
         cloudinary.uploader.upload(image, options, (error, result) => {
             if(result && result.secure_url) {
-                console.log(result.secure_url);
                 return resolve(result.secure_url);
             }
-
-            console.log(error.message);
             return reject({ message: error.message });
         })
 
+    })
+}
+
+
+module.exports.uploadMultipleImages = async (images) => {
+    return new Promise((resolve, reject) => {
+        const uploads = images.map((base) => uploadImage(base));
+        Promise.all(uploads)
+        .then((values) => resolve(values))
+        .catch((err) => reject(err));
     })
 }
