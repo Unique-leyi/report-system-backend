@@ -8,7 +8,7 @@ const handleError = (res, err) => {
 
 exports.createReport = async (req, res) => {
   try {
-    const { task_headline, task_summary, task_tags, task_images, task_date, userId } = req.body;
+    const { task_headline, task_author, task_summary, task_tags, task_images, task_date, userId } = req.body;
 
     const user = await User.findById(userId);
 
@@ -17,7 +17,8 @@ exports.createReport = async (req, res) => {
     }
 
     const newReport = new Report({
-      task_headline,
+      task_headline, 
+      task_author,
       task_summary,
       task_tags,
       task_images,
@@ -75,9 +76,10 @@ exports.getReport = async (req, res) => {
 
 exports.updateReport = async (req, res) => {
   try {
-    const { task_headline, task_summary, task_tags, task_images, task_date } = req.body;
+    const { task_headline, task_author, task_summary, task_tags, task_images, task_date } = req.body;
     const updatedReport = {
-      task_headline,
+      task_headline, 
+      task_author,
       task_summary,
       task_tags,
       task_images,

@@ -7,6 +7,12 @@ const ReportSchema = new Schema({
     type: String,
     required: true,
   },
+
+  task_author: {
+    type: String,
+    required: true,
+  },
+
   task_summary: {
     type: String,
     required: true,
