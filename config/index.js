@@ -1,10 +1,20 @@
 const config = {
-    port: process.env.PORT,
-    local_client_app: process.env.LOCAL_CLIENT_APP,
-    remote_client_app: process.env.REMOTE_CLIENT_APP,
-    allowedDomains: (process.env.NODE_ENV === "production")
-    ? [process.env.REMOTE_CLIENT_APP, process.env.REMOTE_SERVER_API]
-    : [process.env.LOCAL_CLIENT_APP, process.env.LOCAL_SERVER_API]
-} 
-
-module.exports = config
+    port: process.env.PORT || 8000,
+    local_client_app: process.env.LOCAL_CLIENT_APP || 'http://localhost:3000',
+    remote_client_app: process.env.REMOTE_CLIENT_APP || 'https://report-system-one.vercel.app',
+    allowedDomains: (() => {
+      const localClient = process.env.LOCAL_CLIENT_APP || 'http://localhost:3000';
+      const remoteClient = process.env.REMOTE_CLIENT_APP || 'https://report-system-one.vercel.app';
+      const localServerAPI = process.env.LOCAL_SERVER_API || 'http://localhost:8000';
+      const remoteServerAPI = process.env.REMOTE_SERVER_API || 'https://report-system-backend.up.railway.app';
+  
+      if (process.env.NODE_ENV === 'production') {
+        return [remoteClient, remoteServerAPI];
+      } else {
+        return [localClient, localServerAPI];
+      }
+    })(),
+  };
+  
+  module.exports = config;
+  
