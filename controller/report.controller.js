@@ -50,7 +50,7 @@ exports.getReportsById = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    const reports = await Report.find({ user: userId }).populate("user"); // Populate the user field
+    const reports = await Report.find({ user: userId }).populate("user");
     res.json(reports);
   } catch (err) {
     handleError(res, err);
